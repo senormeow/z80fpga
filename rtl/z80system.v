@@ -13,8 +13,8 @@ module z80_system(clk,
   input wire clk;
   input wire reset;
   input wire s_rx;
-  
-  output wire [7:0]dbus_in;
+
+  output reg [7:0]dbus_in;
   output wire s_tx;
   output wire [15:0]address;
   output wire [7:0]dbus_out;
@@ -56,12 +56,10 @@ module z80_system(clk,
 
 
 
-  assign dbus_in[7:0] = mem_dout[7:0];
+  //assign dbus_in[7:0] = mem_dout[7:0];
   assign memaddr[9:0] = address[9:0];
   assign io_addr[7:0] = address[7:0];
 
-  wire tx;
-  wire rx;
   wire write;
   wire uart_enable;
 
@@ -78,23 +76,30 @@ module z80_system(clk,
 
 
   uart_device myuart(.clk(clk),
-                   .enable(uart_enable),
-                   .address(io_addr),
-                   .dbus_in(dbus_out),
-                   .dbus_out(uart_dout),
-                   .write(write),
-                   .tx(tx),
-                   .rx(rx));
+                     .enable(uart_enable),
+                     .address(io_addr),
+                     .dbus_in(dbus_out),
+                     .dbus_out(uart_dout),
+                     .write(write),
+                     .tx(s_tx),
+                     .rx(s_rx));
+
+
+  always @*
+  begin
+    if(iorq_n)
+      dbus_in <= mem_dout;
+    else
+      dbus_in <= uart_dout;
+  end
+
 
 
   reg [7:0] charout = 0;
 
-  always @(negedge iorq_n,negedge wr_n)
-    if(address[7:0] == 'hBB)
+  always @(negedge iorq_n)
+    //always @*
+    if(!wr_n && address[7:0] == 'hBB)
       charout <= dbus_out;
-
-
-
-
 endmodule
 
