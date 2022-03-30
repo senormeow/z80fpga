@@ -3,10 +3,10 @@
 // Modified from fpga4fun.com & KNJN LLC
 //`define SIMULATION
 //Generate a Uart device that we can wire in
-module uart_device(clk, address, dbus_in, dbus_out, read, write, tx, rx);
+module uart_device(clk, enable, address, dbus_in, dbus_out, write, tx, rx);
   input wire clk;
+  input wire enable;
   input wire [7:0]address;
-  input wire read;
   input wire write;
   input wire [7:0]dbus_in;
   input wire rx;
@@ -20,20 +20,20 @@ module uart_device(clk, address, dbus_in, dbus_out, read, write, tx, rx);
 
   always @(posedge clk)
   begin
-    if(address == 8'h00 && !write)
+    if(enable && address == 8'h00 && !write)
       dbus_out <= 8'h00 + TxD_busy;
 
-    if(address == 8'h01 && write)
+    if(enable && address == 8'h01 && write)
       TxD_data <= dbus_in;
 
-    if(address == 8'h01 && !write)
+    if(enable && address == 8'h01 && !write)
       dbus_out <= TxD_data;
 
-    if(address == 8'h02 && write)
+    if(enable && address == 8'h02 && write)
       if(dbus_in == 8'h01)
         TxD_start <= 1;
 
-    if(TxD_start == 1 && TxD_busy == 1)
+    if(enable && TxD_start == 1 && TxD_busy == 1)
       TxD_start <= 0;
   end
 

@@ -44,7 +44,7 @@ def bench():
         reset.next = 1
         yield delay(10)
         reset.next = 0
-        for i in range(10):
+        for i in range(20):
             yield address 
             #dbus_in.next = MEMORY[int(address)]
             print(f"Python {now()}  addr:{int(address):04x} dout:{int(dbus_out):02x} din:{int(dbus_in):02x}")

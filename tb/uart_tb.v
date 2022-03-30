@@ -2,7 +2,7 @@ module uart_tb;
 
   reg clk=0;
   reg [7:0]address = 8'b0000000;
-  reg read = 0;
+  reg enable = 0;
   reg write = 0;
   reg [7:0]cpu_dbus_out = 8'b0000000;
   wire tx;
@@ -13,10 +13,10 @@ module uart_tb;
 
 
   uart_device dut(.clk(clk),
+                  .enable(enable),
                   .address(address),
                   .dbus_in(cpu_dbus_out),
                   .dbus_out(cpu_dbus_in),
-                  .read(read),
                   .write(write),
                   .tx(tx),
                   .rx(rx));
@@ -27,6 +27,7 @@ module uart_tb;
     $dumpvars();
 
     #35 address = 'h01;
+    enable = 1;
     #40 cpu_dbus_out = 'hBB;
     #60 write = 1;
     #80 write = 0;
