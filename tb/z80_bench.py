@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import sys
 
@@ -44,11 +45,14 @@ def bench():
         reset.next = 1
         yield delay(10)
         reset.next = 0
-        for i in range(20):
+        for i in range(300):
             yield address 
             #dbus_in.next = MEMORY[int(address)]
             print(f"Python {now()}  addr:{int(address):04x} dout:{int(dbus_out):02x} din:{int(dbus_in):02x}")
-        
+            if(address == 0xFFFF and dbus_in == 0xFF):
+                print("Stop IO called")
+                raise StopSimulation
+        print("Counter ran out")
         raise StopSimulation
 
     return instances()

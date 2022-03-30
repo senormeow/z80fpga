@@ -29,7 +29,7 @@ module memory(mem_out, addr, mem_in, we, clk);
 	
 	initial
 		begin
-	$readmemh("mymem.mem", mem);
+	$readmemh("rom.mem", mem);
 	end
 	
     always @(posedge clk) begin

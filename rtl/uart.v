@@ -18,24 +18,28 @@ module uart_device(clk, enable, address, dbus_in, dbus_out, write, tx, rx);
   reg TxD_start = 0;
   reg [7:0]TxD_data = 0;
 
-  always @(posedge clk)
+  always @(posedge enable)
   begin
-    if(enable && address == 8'h00 && !write)
+    if(enable && address == 8'h10 && !write)
       dbus_out <= 8'h00 + TxD_busy;
 
-    if(enable && address == 8'h01 && write)
+    if(enable && address == 8'h11 && write)
       TxD_data <= dbus_in;
 
-    if(enable && address == 8'h01 && !write)
+    if(enable && address == 8'h11 && !write)
       dbus_out <= TxD_data;
 
-    if(enable && address == 8'h02 && write)
+    if(enable && address == 8'h12 && write)
       if(dbus_in == 8'h01)
         TxD_start <= 1;
 
     if(enable && TxD_start == 1 && TxD_busy == 1)
       TxD_start <= 0;
   end
+
+  always @(posedge clk)
+    if(TxD_start == 1 && TxD_busy == 1)
+    TxD_start <= 0;
 
   uart_tx uart_tx_1(.clk(clk),
                     .TxD_start(TxD_start),
@@ -61,7 +65,7 @@ module uart_tx(
   //parameter ClkFrequency = 25000000;	// 25MHz
   //parameter Baud = 115200;
 
-  parameter ClkFrequency = 1_000_000;	// 25MHz
+  parameter ClkFrequency = 10_000_000;	// 25MHz
   parameter Baud = 1_000_000;
 
   generate

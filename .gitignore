@@ -1,2 +1,5 @@
 *.o
+*.bin
+*.lst
 *.vcd
+tb/rom.mem
