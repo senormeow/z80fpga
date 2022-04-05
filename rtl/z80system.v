@@ -5,6 +5,7 @@ module z80_system(clk,
                     dbus_in,
                     dbus_out,
                     address,
+						  charout,
                     rd_n,
                     wr_n,
                     mreq_n,
@@ -18,6 +19,7 @@ module z80_system(clk,
   output wire s_tx;
   output wire [15:0]address;
   output wire [7:0]dbus_out;
+  output reg [7:0] charout = 0;
   output wire rd_n;
   output wire wr_n;
   output wire mreq_n;
@@ -85,7 +87,7 @@ module z80_system(clk,
                      .rx(s_rx));
 
 
-  always @*
+  always @(clk)
   begin
     if(iorq_n)
       dbus_in <= mem_dout;
@@ -94,12 +96,9 @@ module z80_system(clk,
   end
 
 
-
-  reg [7:0] charout = 0;
-
-  always @(negedge iorq_n)
-    //always @*
-    if(!wr_n && address[7:0] == 'hBB)
+  //always @(negedge iorq_n)
+    always @(clk)
+    if(!iorq_n && !wr_n && address[7:0] == 'hBB)
       charout <= dbus_out;
 endmodule
 

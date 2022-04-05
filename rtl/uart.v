@@ -11,14 +11,14 @@ module uart_device(clk, enable, address, dbus_in, dbus_out, write, tx, rx);
   input wire [7:0]dbus_in;
   input wire rx;
 
-  output reg [7:0]dbus_out;
+  output reg [7:0]dbus_out = 0;
   output wire tx;
 
   wire TxD_busy;
   reg TxD_start = 0;
   reg [7:0]TxD_data = 0;
 
-  always @(posedge enable)
+  always @(clk)
   begin
     if(enable && address == 8'h10 && !write)
       dbus_out <= 8'h00 + TxD_busy;
@@ -32,7 +32,7 @@ module uart_device(clk, enable, address, dbus_in, dbus_out, write, tx, rx);
 
   end
 
-  always @(enable, clk)
+  always @(clk)
   begin
     if(enable && address == 8'h12 && dbus_in == 8'h01 && write)
         TxD_start <= 1;
@@ -62,11 +62,11 @@ module uart_tx(
   // Assert TxD_start for (at least) one clock cycle to start transmission of TxD_data
   // TxD_data is latched so that it doesn't have to stay valid while it is being sent
 
-  parameter ClkFrequency = 25000000;	// 25MHz
-  parameter Baud = 115200;
+  //parameter ClkFrequency = 1_000_000;	// 25MHz
+  //parameter Baud = 115200;
 
-  //parameter ClkFrequency = 1_000_000;	// 1MHz
-  //parameter Baud = 9600;
+  parameter ClkFrequency = 1_000_000;	// 1MHz
+  parameter Baud = 115200;
 
   generate
     if(ClkFrequency<Baud*8 && (ClkFrequency % Baud!=0))

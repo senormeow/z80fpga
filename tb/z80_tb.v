@@ -1,3 +1,4 @@
+`timescale 100ns / 100ps
 module z80_test;
 
   reg clk = 0;

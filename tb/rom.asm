@@ -4,7 +4,7 @@ start:
 org 0010h
 seek 0010h
 begin:
-    LD a, 00CCh
+    LD a, 0077h
     OUT (0BBh), a
     nop
     LD b, 41h
