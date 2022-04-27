@@ -87,17 +87,26 @@ module z80_system(clk,
                      .rx(s_rx));
 
 
-  always @(clk)
+  // XXX: You want this to be combinatorial logic, not sequential. I.e.
+  // you are simply describing a MUX here. The memory already has a one
+  // cycle delay for reads and if you add an additional here the CPU
+  // will not sample the instructions correctly.
+  //
+  // It is a bit hard for me to tell what the intention is but for the
+  // UART it looks like the driving of dbus_out was also designed to
+  // match this one cycle delay so that should be fine if that always
+  // block too is updated to be posedge of clk.
+  always @(*)
   begin
     if(iorq_n)
-      dbus_in <= mem_dout;
+      dbus_in = mem_dout;
     else
-      dbus_in <= uart_dout;
+      dbus_in = uart_dout;
   end
 
 
-  //always @(negedge iorq_n)
-    always @(clk)
+    always @(negedge clk)
+    //always @(*)
     if(!iorq_n && !wr_n && address[7:0] == 'hBB)
       charout <= dbus_out;
 endmodule

@@ -4,11 +4,18 @@ start:
 org 0010h
 seek 0010h
 begin:
-    LD a, 0077h
+    LD a, 00deh
     OUT (0BBh), a
+;    LD a, 00adh
+;    OUT (0BBh), a
+;    LD a, 00beh
+;    OUT (0BBh), a
+;    LD a, 00efh
+;    OUT (0BBh), a
+;    JP begin
     nop
     LD b, 41h
-print: 
+print:
     LD c, 11h
     OUT (c), b
     LD a, 01h

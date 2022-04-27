@@ -19,14 +19,12 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module memory(mem_out, addr, mem_in, we, clk);
-   output[7:0] mem_out;
+   output reg [7:0] mem_out;
    input [7:0] mem_in;
    input [9:0] addr;
    input we, clk;
-	reg [7:0] mem_out = 254;
-   //reg [7:0] mem [1023:0];
    reg [7:0] mem [0:1023];
-	
+
 	initial
 		begin
 	$readmemh("rom.mem", mem);

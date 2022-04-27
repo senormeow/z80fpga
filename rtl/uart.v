@@ -18,21 +18,21 @@ module uart_device(clk, enable, address, dbus_in, dbus_out, write, tx, rx);
   reg TxD_start = 0;
   reg [7:0]TxD_data = 0;
 
-  always @(clk)
+  always @(*)
   begin
     if(enable && address == 8'h10 && !write)
-      dbus_out <= 8'h00 + TxD_busy;
+      dbus_out = 8'h00 + TxD_busy;
 
     if(enable && address == 8'h11 && write)
-      TxD_data <= dbus_in;
+      TxD_data = dbus_in;
 
     if(enable && address == 8'h11 && !write)
-      dbus_out <= TxD_data;
+      dbus_out = TxD_data;
 
 
   end
 
-  always @(clk)
+  always @(posedge clk)
   begin
     if(enable && address == 8'h12 && dbus_in == 8'h01 && write)
         TxD_start <= 1;
